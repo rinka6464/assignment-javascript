@@ -14,6 +14,14 @@ const equalBtn = document.getElementById("equal");
 // 数字ボタンの設定
 numberBtns.forEach(function(num) {
     document.getElementById(num).addEventListener("click", function() {
+        if (inputStr === "0") {
+            return;
+        }
+        if (num === "00" && inputStr === "") {
+           inputStr = "0";
+           display.textContent = inputStr;
+            return;
+        }
         inputStr += num;
         display.textContent = inputStr;
     });
@@ -22,6 +30,10 @@ numberBtns.forEach(function(num) {
 // 演算子ボタンの設定
 operatorBtns.forEach(function(op) {
     document.getElementById(op.id).addEventListener("click", function() {
+        const lastChar = inputStr[inputStr.length - 1];
+        if (["+", "-", "*", "/"].includes(lastChar)) {
+            return;
+        }
         inputStr += op.value;
         display.textContent = inputStr;
     });
@@ -29,6 +41,11 @@ operatorBtns.forEach(function(op) {
 
 // 小数点ボタンの設定
 pointBtn.addEventListener("click", function() {
+    const parts = inputStr.split(/[+\-*/]/);
+    const lastParts = parts[parts.length - 1];
+    if (lastParts.includes(".")) {
+    return;
+    }
     inputStr += ".";
     display.textContent = inputStr;
 });
@@ -42,5 +59,12 @@ clearBtn.addEventListener("click", function() {
 
 // equalボタンの設定
 equalBtn.addEventListener("click", function() {
-    display.textContent = eval(inputStr);
+    const answer = eval(inputStr);
+    if (answer === Infinity || answer === undefined) {
+        display.textContent = "error";
+        inputStr = "";
+        return;
+    }
+    inputStr = String(answer);
+    display.textContent = inputStr;
 });
